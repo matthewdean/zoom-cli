@@ -30,12 +30,6 @@ class ZoomConfig:
         self.backgrounds_dir = data_dir / "VirtualBkgnd_Custom"
         self.video_thumbs_dir = data_dir / "VirtualBkgnd_VideoThumb"
         self.conn = sqlite3.connect(data_dir / "zoomus.db")
-        if platform.system() == "Windows":
-            self.ffmpeg_path = str(Path(__file__).parent / "bin" / "ffmpeg-win64" / "bin" / "ffmpeg.exe")
-        elif platform.system() == "Darwin":
-            self.ffmpeg_path = str(Path(__file__).parent / "bin" / "ffmpeg-macos" / "bin" / "ffmpeg")
-        else:
-            raise Exception("not implemented")
 
     def get_background(self):
         return self.get_current_background_path()
@@ -74,18 +68,17 @@ class ZoomConfig:
             target_path = str(self.backgrounds_dir / str(uuid.uuid4()))
 
             # todo: change this to generate PNGs
-            ffmpeg.input(source_path).filter('scale', 'min(in_w,1920)', -1).filter('crop', 'min(in_w,1920)', 'min(in_h,1080)', 0, '(max(in_w-1080,0))/2').output(target_path, format='mjpeg').run(cmd=self.ffmpeg_path)
-            # copyfile(source_path, target_path)
+            ffmpeg.input(source_path).filter('scale', 'min(in_w,1920)', -1).filter('crop', 'min(in_w,1920)', 'min(in_h,1080)', 0, '(max(in_w-1080,0))/2').output(target_path, format='mjpeg').run()
 
         elif kind.mime.startswith("video"):
             type = VirtualBackgroundType.CUSTOM_VIDEO
-            # we do not copy videos, presumably for size
+            # we do not copy videos, presumably for size reasons
             target_path = source_path
 
             # generate video thumbnail
             thumb_path = str(self.video_thumbs_dir / str(uuid.uuid4()))
             # todo: change this to generate BMPs
-            ffmpeg.input(source_path).filter('scale', 320, -1).output(thumb_path, format='mjpeg', vframes=1).run(cmd=self.ffmpeg_path)
+            ffmpeg.input(source_path).filter('scale', 320, -1).output(thumb_path, format='mjpeg', vframes=1).run()
         else:
            print("skipping file for unsupported mime type: " + kind.mime + " from " + source_path)
            return

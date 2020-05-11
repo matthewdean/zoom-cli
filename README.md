@@ -1,9 +1,14 @@
 # zoom-cli
-
 Command line interface for changing Zoom virtual backgrounds
 
-## Usage
+## Installation
+```
+git clone https://github.com/matthewdean/zoom-cli.git
+cd zoom-cli
+pip install -r requirements.txt
+```
 
+## Usage
 ```
 $ python zoom.py --help
 usage:
@@ -22,5 +27,10 @@ usage:
 ```
 
 ## Notes
-* Requires Python 3
 * Zoom must be restarted for virtual background changes to take effect
+* Tested on Windows and macOS
+
+## Requirements
+* pip
+* Python 3
+* ffmpeg
